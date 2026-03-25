@@ -12,7 +12,11 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance != null) Destroy(gameObject); return;
+        if (Instance != null) { 
+            Destroy(gameObject); 
+            return; 
+        }
+        
         Instance = this;
         DontDestroyOnLoad(gameObject);
         HighScore = PlayerPrefs.GetInt("HighScore", 0);

@@ -9,16 +9,18 @@ public class FadeIn : MonoBehaviour
 
     void Start()
     {
+        if (fadePanel == null) return;
+        Color c = fadePanel.color;
+        c.a = 1f;
+        fadePanel.color = c;
         StartCoroutine(FadeRoutine());
     }
 
     IEnumerator FadeRoutine()
     {
-        Color c = fadePanel.color;
-        c.a = 1f;
-        fadePanel.color = c;
-
         float elapsed = 0f;
+        Color c = fadePanel.color;
+
         while (elapsed < fadeDuration)
         {
             elapsed += Time.deltaTime;
@@ -26,5 +28,8 @@ public class FadeIn : MonoBehaviour
             fadePanel.color = c;
             yield return null;
         }
+
+        c.a = 0f;
+        fadePanel.color = c;
     }
 }

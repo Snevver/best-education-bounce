@@ -23,7 +23,7 @@ public class CameraFollow : MonoBehaviour
             float travelled = newY - highestY;
             
             if (travelled > 0) {
-                GameManager.Instance?.AddScore(Mathf.RoundToInt(travelled * 10f));
+                GameManager.Instance?.AddScore(Mathf.RoundToInt(travelled * 20f));
                 highestY = newY;
             }
 

@@ -52,10 +52,17 @@ public class PlayerController : MonoBehaviour
     {
         float bottomEdge = Camera.main.transform.position.y - Camera.main.orthographicSize;
         
-        if (transform.position.y < bottomEdge) {
+        if (transform.position.y < bottomEdge)
+        {
             GameManager.Score = 0;
             GameManager.Instance.GameOver();
-            FindObjectOfType<FadeOut>().StartFade();
+
+            FadeOut fadeOut = FindObjectOfType<FadeOut>();
+            if (fadeOut != null)
+                fadeOut.StartFade();
+            else
+                UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+
             enabled = false;
         }
     }

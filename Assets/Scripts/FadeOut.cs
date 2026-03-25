@@ -11,6 +11,11 @@ public class FadeOut : MonoBehaviour
 
     public void StartFade()
     {
+        if (fadePanel == null) return;
+
+        Color c = fadePanel.color;
+        c.a = 0f;
+        fadePanel.color = c;
         StartCoroutine(FadeRoutine());
     }
 
@@ -18,8 +23,6 @@ public class FadeOut : MonoBehaviour
     {
         float elapsed = 0f;
         Color c = fadePanel.color;
-        c.a = 0f;
-        fadePanel.color = c;
 
         while (elapsed < fadeDuration)
         {
@@ -29,6 +32,8 @@ public class FadeOut : MonoBehaviour
             yield return null;
         }
 
+        c.a = 1f;
+        fadePanel.color = c;
         SceneManager.LoadScene(targetScene);
     }
 }
