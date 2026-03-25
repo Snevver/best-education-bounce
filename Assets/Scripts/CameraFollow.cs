@@ -9,30 +9,20 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
-        // Track the highest Y position reached for scoring
         highestY = transform.position.y;
     }
 
-    void LateUpdate()
+    void Update()
     {
         if (player == null) return;
 
-        // Get midpoint
-        float midpoint = transform.position.y;
-
-        // Only move camera up when player is above midpoint
-        if (player.position.y > midpoint)
+        if (player.position.y > transform.position.y)
         {
-            float targetY = player.position.y;
-            
-            // Set new camera Y to a point between current Y and target Y based on smoothSpeed
-            float newY = Mathf.Lerp(transform.position.y, targetY, smoothSpeed * Time.deltaTime);
+            float newY = Mathf.Lerp(transform.position.y, player.position.y, smoothSpeed * Time.deltaTime);
 
             float travelled = newY - highestY;
-
-            // Add score based on how much we've moved up since the last highest point
-            if (travelled > 0)
-            {
+            
+            if (travelled > 0) {
                 GameManager.Instance?.AddScore(Mathf.RoundToInt(travelled * 10f));
                 highestY = newY;
             }

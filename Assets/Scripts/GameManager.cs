@@ -8,9 +8,11 @@ public class GameManager : MonoBehaviour
     public static int Score;
     public static int HighScore;
 
+    public static bool DiedLastGame = false;
+
     void Awake()
     {
-        if (Instance != null) { Destroy(gameObject); return; }
+        if (Instance != null) Destroy(gameObject); return;
         Instance = this;
         DontDestroyOnLoad(gameObject);
         HighScore = PlayerPrefs.GetInt("HighScore", 0);
@@ -19,8 +21,7 @@ public class GameManager : MonoBehaviour
     public void AddScore(int amount)
     {
         Score += amount;
-        if (Score > HighScore)
-        {
+        if (Score > HighScore) {
             HighScore = Score;
             PlayerPrefs.SetInt("HighScore", HighScore);
         }
@@ -28,6 +29,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        SceneManager.LoadScene("MainMenu");
+        DiedLastGame = true;
+        PlayerPrefs.SetInt("HighScore", HighScore);
     }
 }

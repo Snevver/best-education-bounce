@@ -12,22 +12,23 @@ public class UIManager : MonoBehaviour
 
     bool isMenuScene;
 
+    public GameObject deathPanel;
+
     void Start()
     {
         isMenuScene = SceneManager.GetActiveScene().name == "MainMenu";
 
-        if (isMenuScene && menuHighScoreText != null)
-            menuHighScoreText.text = "Best: " + GameManager.HighScore;
+        if (isMenuScene) {
+            if (menuHighScoreText != null) menuHighScoreText.text = "Best: " + GameManager.HighScore;
+            if (deathPanel != null) deathPanel.SetActive(GameManager.DiedLastGame);
+        }
     }
 
     void Update()
     {
         if (isMenuScene) return;
-
-        if (scoreText != null)
-            scoreText.text = "Score: " + GameManager.Score.ToString();
-        if (highScoreText != null)
-            highScoreText.text = "Best: " + GameManager.HighScore;
+        if (scoreText != null) scoreText.text = "Score: " + GameManager.Score.ToString();
+        if (highScoreText != null) highScoreText.text = "Best: " + GameManager.HighScore;
     }
 
     public void OnPlayButton()

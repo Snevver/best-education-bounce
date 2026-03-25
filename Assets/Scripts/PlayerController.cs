@@ -7,10 +7,12 @@ public class PlayerController : MonoBehaviour
     float screenHalfWidth;
 
     Rigidbody2D rigidBody;
+    Animator animator;
 
     void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         screenHalfWidth = Camera.main.orthographicSize * Camera.main.aspect;
     }
 
@@ -25,6 +27,12 @@ public class PlayerController : MonoBehaviour
         rigidBody.linearVelocity = new Vector2(input * moveSpeed, rigidBody.linearVelocity.y);
 
         checkScreenCrossover();
+
+        if (animator != null) animator.SetFloat("speedX", Mathf.Abs(input));
+
+        // Flip sprite based on direction
+        if (input < 0) transform.localScale = new Vector3(1, 1, 1);
+        if (input > 0) transform.localScale = new Vector3(-1, 1, 1);
     }
 
     public void Bounce(float force)
@@ -43,12 +51,12 @@ public class PlayerController : MonoBehaviour
     void LateUpdate()
     {
         float bottomEdge = Camera.main.transform.position.y - Camera.main.orthographicSize;
-        if (transform.position.y < bottomEdge)
-        {
+        
+        if (transform.position.y < bottomEdge) {
             GameManager.Score = 0;
-            UnityEngine.SceneManagement.SceneManager.LoadScene(
-                UnityEngine.SceneManagement.SceneManager.GetActiveScene().name
-            );
+            GameManager.Instance.GameOver();
+            FindObjectOfType<FadeOut>().StartFade();
+            enabled = false;
         }
     }
 }

@@ -18,23 +18,25 @@ public class PlatformSpawner : MonoBehaviour
     {
         float cameraTop = Camera.main.transform.position.y + Camera.main.orthographicSize;
 
-        // Spawn platforms until we have enough above the camera
-        while (nextSpawnY < cameraTop + 10f)
-        {
+        while (nextSpawnY < cameraTop + 10f) {
             SpawnPlatform(nextSpawnY);
-
-            // Space out platforms randomly between 1.8 and 2.5 units
-            nextSpawnY += Random.Range(1.8f, 2.5f);
+            nextSpawnY += GetGap();
         }
 
-        // Destroy platforms that have fallen off screen
         float cameraBottom = Camera.main.transform.position.y - Camera.main.orthographicSize;
         
-        foreach (var platform in FindObjectsByType<Platform>(FindObjectsSortMode.None))
-        {
-            // Destroy platforms that are more than 2 units below the bottom of the camera
+        foreach (var platform in FindObjectsByType<Platform>(FindObjectsSortMode.None)){
             if (platform.transform.position.y < cameraBottom - 2f) Destroy(platform.gameObject);
         }
+    }
+
+    float GetGap()
+    {
+        int score = GameManager.Score;
+        if (score < 1000) return Random.Range(1.8f, 2.5f);
+        if (score < 3000) return Random.Range(2.5f, 3.5f);
+        if (score < 6000) return Random.Range(3.5f, 5f);
+        return Random.Range(5f, 7f);
     }
 
     void SpawnPlatform(float y)
