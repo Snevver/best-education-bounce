@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public static int Score;
     public static int HighScore;
+    public static int LastScore;
 
     public static bool DiedLastGame = false;
 
@@ -33,7 +34,13 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        LastScore = Score;
         DiedLastGame = true;
+
+        if (Score > HighScore)
+            HighScore = Score;
+
         PlayerPrefs.SetInt("HighScore", HighScore);
+        PlayerPrefs.Save();
     }
 }

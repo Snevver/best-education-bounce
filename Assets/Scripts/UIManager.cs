@@ -8,6 +8,8 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI highScoreText;
 
     public TextMeshProUGUI menuHighScoreText;
+    public TextMeshProUGUI lastScoreText;
+    public TextMeshProUGUI congratsText;
     public GameObject playButton;
 
     bool isMenuScene;
@@ -18,9 +20,34 @@ public class UIManager : MonoBehaviour
     {
         isMenuScene = SceneManager.GetActiveScene().name == "MainMenu";
 
-        if (isMenuScene) {
-            if (menuHighScoreText != null) menuHighScoreText.text = "Best: " + GameManager.HighScore;
-            if (deathPanel != null) deathPanel.SetActive(GameManager.DiedLastGame);
+        if (isMenuScene)
+        {
+            if (menuHighScoreText != null) 
+                menuHighScoreText.text = "Best: " + PlayerPrefs.GetInt("HighScore", 0);
+            
+            if (deathPanel != null) 
+                deathPanel.SetActive(GameManager.DiedLastGame);
+
+            if (lastScoreText != null)
+            {
+                if (GameManager.LastScore > 0)
+                {
+                    lastScoreText.gameObject.SetActive(true);
+                    lastScoreText.text = "Score: " + GameManager.LastScore;
+                }
+                else
+                {
+                    lastScoreText.gameObject.SetActive(false);
+                }
+            }
+
+            if (congratsText != null)
+            {
+                bool isNewHighScore = GameManager.LastScore > 0 && GameManager.LastScore >= GameManager.HighScore;
+                congratsText.gameObject.SetActive(isNewHighScore);
+                if (isNewHighScore)
+                    congratsText.text = "New highscore!";
+            }
         }
     }
 

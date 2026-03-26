@@ -25,5 +25,7 @@ public class Boost : MonoBehaviour
 
         col.gameObject.GetComponent<PlayerController>().Bounce(boostForce);
         Destroy(gameObject);
+
+        GameManager.Instance.AddScore(250);
     }
 }

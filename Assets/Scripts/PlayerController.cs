@@ -3,8 +3,11 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 8f;
+    public GameObject explosionPrefab;
+    public float monsterStompBoost = 22f;
 
     float screenHalfWidth;
+    const float stompTopTolerance = 0.2f;
 
     Rigidbody2D rigidBody;
     Animator animator;
@@ -35,8 +38,9 @@ public class PlayerController : MonoBehaviour
         if (input > 0) transform.localScale = new Vector3(-1, 1, 1);
     }
 
-    public void Bounce(float force)
+    public void Bounce(float force, bool isPLayer = true)
     {
+        if (!isPLayer) force /= 2f;
         rigidBody.linearVelocity = new Vector2(rigidBody.linearVelocity.x, force);
     }
 
@@ -54,16 +58,78 @@ public class PlayerController : MonoBehaviour
         
         if (transform.position.y < bottomEdge)
         {
+            GameManager.LastScore = GameManager.Score;
+        GameManager.Instance.GameOver();
             GameManager.Score = 0;
-            GameManager.Instance.GameOver();
 
             FadeOut fadeOut = FindObjectOfType<FadeOut>();
-            if (fadeOut != null)
-                fadeOut.StartFade();
-            else
-                UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+            fadeOut.StartFade();
+
 
             enabled = false;
         }
+    }
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (!col.gameObject.CompareTag("Monster")) return;
+
+        if (IsStompOnMonster(col))
+        {
+            if (explosionPrefab != null)
+                Instantiate(explosionPrefab, new Vector3(col.transform.position.x, col.transform.position.y, -1f), Quaternion.identity);
+            
+            Bounce(monsterStompBoost);
+            Destroy(col.gameObject);
+
+            GameManager.Instance.AddScore(500);
+            return;
+        }
+
+        // Spawn explosion at player position
+        if (explosionPrefab != null)
+            Instantiate(explosionPrefab, new Vector3(transform.position.x, transform.position.y, -1f), Quaternion.identity);
+
+        GameManager.LastScore = GameManager.Score;
+        GameManager.Instance.GameOver();
+        GameManager.Score = 0;  
+
+        FadeOut fadeOut = FindObjectOfType<FadeOut>();
+        if (fadeOut != null)
+            fadeOut.StartFade();
+
+        Destroy(gameObject);
+    }
+
+    // Really complicated check made by AI to determine if player is stomping on monster
+    bool IsStompOnMonster(Collision2D col)
+    {   
+        Debug.Log("Checking stomp on monster...");
+        if (rigidBody == null) return false;
+        if (col.collider == null || col.otherCollider == null) return false;
+
+        // In Player callbacks: otherCollider is the player's collider, collider is the monster's collider.
+        Collider2D playerCollider = col.otherCollider;
+        Collider2D monsterCollider = col.collider;
+
+        bool movingDown = rigidBody.linearVelocity.y <= 0.1f || col.relativeVelocity.y < -0.1f;
+        if (!movingDown) return false;
+
+        float playerBottom = playerCollider.bounds.min.y;
+        float monsterTop = monsterCollider.bounds.max.y;
+        bool nearTop = playerBottom >= monsterTop - stompTopTolerance;
+        bool playerAboveMonster = playerCollider.bounds.center.y > monsterCollider.bounds.center.y;
+
+        if (nearTop && playerAboveMonster) return true;
+
+        // Fallback for imperfect collider shapes: allow only contacts near monster top while player is above it.
+        for (int i = 0; i < col.contactCount; i++)
+        {
+            ContactPoint2D cp = col.GetContact(i);
+            bool contactNearMonsterTop = Mathf.Abs(cp.point.y - monsterTop) <= stompTopTolerance;
+            if (playerAboveMonster && contactNearMonsterTop) return true;
+        }
+
+        return false;
     }
 }

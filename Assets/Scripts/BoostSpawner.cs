@@ -28,7 +28,7 @@ public class BoostSpawner : MonoBehaviour
         float cameraBottom = Camera.main.transform.position.y - Camera.main.orthographicSize;
 
         foreach (var boost in FindObjectsByType<Boost>(FindObjectsSortMode.None)) {
-            if (boost.transform.position.y < cameraBottom - 2f) Destroy(boost.gameObject);
+            if (boost.transform.position.y < cameraBottom) Destroy(boost.gameObject);
         }
     }
 

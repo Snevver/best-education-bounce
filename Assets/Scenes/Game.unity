@@ -556,7 +556,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -609,6 +609,7 @@ MonoBehaviour:
   scoreText: {fileID: 640050160}
   highScoreText: {fileID: 422660536}
   menuHighScoreText: {fileID: 0}
+  lastScoreText: {fileID: 0}
   playButton: {fileID: 0}
   deathPanel: {fileID: 0}
 --- !u!4 &539910777
@@ -1049,6 +1050,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlatformSpawner
   platformPrefab: {fileID: 5599961291412078639, guid: 8ef2ae413d3c06447b9f011651db098e, type: 3}
+  monsterPrefab: {fileID: 3189229868166941573, guid: 08b8221d8a9aeb245a812b6ac7d0ff07, type: 3}
   platformWidth: 2
 --- !u!4 &1349677256
 Transform:
@@ -1087,7 +1089,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6526677783357279199, guid: 8ef2ae413d3c06447b9f011651db098e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.02
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6526677783357279199, guid: 8ef2ae413d3c06447b9f011651db098e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1393,19 +1395,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.3313897, y: 1.7295785}
   m_EdgeRadius: 0
---- !u!114 &2115426949
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2115426944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa182bd9fa1a5b8418e2a4e18334f59d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  moveSpeed: 8
 --- !u!4 &2115426952 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9023145201408633848, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
@@ -1441,6 +1430,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -2974563791486733444, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
+      propertyPath: explosionPrefab
+      value: 
+      objectReference: {fileID: 1991648195758833549, guid: 9018430164fc5d3409d6572a78899c01, type: 3}
     - target: {fileID: 713598926344579102, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
       propertyPath: m_Constraints
       value: 4
@@ -1463,7 +1456,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9023145201408633848, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.98
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9023145201408633848, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1505,9 +1498,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6960607602272872526, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2115426948}
-    - targetCorrespondingSourceObject: {fileID: 6960607602272872526, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2115426949}
     - targetCorrespondingSourceObject: {fileID: 6960607602272872526, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2115426956}
