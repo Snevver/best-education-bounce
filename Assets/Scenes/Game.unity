@@ -610,6 +610,7 @@ MonoBehaviour:
   highScoreText: {fileID: 422660536}
   menuHighScoreText: {fileID: 0}
   lastScoreText: {fileID: 0}
+  congratsText: {fileID: 0}
   playButton: {fileID: 0}
   deathPanel: {fileID: 0}
 --- !u!4 &539910777
@@ -1431,9 +1432,29 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -2974563791486733444, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
+      propertyPath: fallOutSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 0ae3004bf9614f547bccdf922e507d36, type: 3}
+    - target: {fileID: -2974563791486733444, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
+      propertyPath: boostBounceSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 5125747ce5e4137459ccf34f6784a303, type: 3}
+    - target: {fileID: -2974563791486733444, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
       propertyPath: explosionPrefab
       value: 
       objectReference: {fileID: 1991648195758833549, guid: 9018430164fc5d3409d6572a78899c01, type: 3}
+    - target: {fileID: -2974563791486733444, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
+      propertyPath: monsterDeathSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: aba75077ed6b9034fa0235e8ad0e7f43, type: 3}
+    - target: {fileID: -2974563791486733444, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
+      propertyPath: monsterBounceSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: b78a21fd052b3d94e80e82f39e2fef8a, type: 3}
+    - target: {fileID: -2974563791486733444, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
+      propertyPath: normalPlatformBounceSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: acca2cffa34344d488b79fa51dae5eda, type: 3}
     - target: {fileID: 713598926344579102, guid: 1522dd01564f97244894fcfcb3738dbc, type: 3}
       propertyPath: m_Constraints
       value: 4
