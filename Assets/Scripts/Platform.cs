@@ -22,7 +22,9 @@ public class Platform : MonoBehaviour
         {
             Rigidbody2D rb = col.gameObject.GetComponent<Rigidbody2D>();
             if (!IsTopHit(col, rb)) return;
-            col.gameObject.GetComponent<PlayerController>().Bounce(bounceForce);
+            PlayerController player = col.gameObject.GetComponent<PlayerController>();
+            player.Bounce(bounceForce);
+            player.PlayNormalPlatformBounceSfx();
         }
 
         if (col.gameObject.CompareTag("Monster"))

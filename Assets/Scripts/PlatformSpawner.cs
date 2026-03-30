@@ -31,6 +31,11 @@ public class PlatformSpawner : MonoBehaviour
         {
             if (platform.transform.position.y < cameraBottom - 1f) Destroy(platform.gameObject);
         }
+
+        foreach (var monster in FindObjectsByType<MonsterController>(FindObjectsSortMode.None))
+        {
+            if (monster.transform.position.y < cameraBottom - 1f) Destroy(monster.gameObject);
+        }
     }
 
     float GetGap()

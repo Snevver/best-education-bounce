@@ -5,6 +5,12 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 8f;
     public GameObject explosionPrefab;
     public float monsterStompBoost = 22f;
+    public AudioClip normalPlatformBounceSfx;
+    public AudioClip boostBounceSfx;
+    public AudioClip monsterBounceSfx;
+    public AudioClip monsterDeathSfx;
+    public AudioClip fallOutSfx;
+    [Range(0f, 1f)] public float sfxVolume = 1f;
 
     float screenHalfWidth;
     const float stompTopTolerance = 0.2f;
@@ -44,6 +50,32 @@ public class PlayerController : MonoBehaviour
         rigidBody.linearVelocity = new Vector2(rigidBody.linearVelocity.x, force);
     }
 
+    public void PlayNormalPlatformBounceSfx()
+    {
+        PlaySfx(normalPlatformBounceSfx);
+    }
+
+    public void PlayBoostBounceSfx()
+    {
+        PlaySfx(boostBounceSfx);
+    }
+
+    public void PlayMonsterBounceSfx()
+    {
+        PlaySfx(monsterBounceSfx);
+    }
+
+    public void PlayFallOutSfx()
+    {
+        PlaySfx(fallOutSfx);
+    }
+
+    void PlaySfx(AudioClip clip)
+    {
+        if (clip == null) return;
+        AudioSource.PlayClipAtPoint(clip, transform.position, sfxVolume);
+    }
+
     void checkScreenCrossover()
     {
         Vector3 pos = transform.position;
@@ -58,13 +90,13 @@ public class PlayerController : MonoBehaviour
         
         if (transform.position.y < bottomEdge)
         {
+            PlayFallOutSfx();
             GameManager.LastScore = GameManager.Score;
-        GameManager.Instance.GameOver();
+            GameManager.Instance.GameOver();
             GameManager.Score = 0;
 
             FadeOut fadeOut = FindObjectOfType<FadeOut>();
             fadeOut.StartFade();
-
 
             enabled = false;
         }
@@ -80,6 +112,7 @@ public class PlayerController : MonoBehaviour
                 Instantiate(explosionPrefab, new Vector3(col.transform.position.x, col.transform.position.y, -1f), Quaternion.identity);
             
             Bounce(monsterStompBoost);
+            PlayMonsterBounceSfx();
             Destroy(col.gameObject);
 
             GameManager.Instance.AddScore(500);
@@ -89,6 +122,8 @@ public class PlayerController : MonoBehaviour
         // Spawn explosion at player position
         if (explosionPrefab != null)
             Instantiate(explosionPrefab, new Vector3(transform.position.x, transform.position.y, -1f), Quaternion.identity);
+
+        PlaySfx(monsterDeathSfx);
 
         GameManager.LastScore = GameManager.Score;
         GameManager.Instance.GameOver();
@@ -104,7 +139,6 @@ public class PlayerController : MonoBehaviour
     // Really complicated check made by AI to determine if player is stomping on monster
     bool IsStompOnMonster(Collision2D col)
     {   
-        Debug.Log("Checking stomp on monster...");
         if (rigidBody == null) return false;
         if (col.collider == null || col.otherCollider == null) return false;
 

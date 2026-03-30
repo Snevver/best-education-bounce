@@ -23,7 +23,9 @@ public class Boost : MonoBehaviour
     {
         if (!col.gameObject.CompareTag("Player")) return;
 
-        col.gameObject.GetComponent<PlayerController>().Bounce(boostForce);
+        PlayerController player = col.gameObject.GetComponent<PlayerController>();
+        player.Bounce(boostForce);
+        player.PlayBoostBounceSfx();
         Destroy(gameObject);
 
         GameManager.Instance.AddScore(250);
