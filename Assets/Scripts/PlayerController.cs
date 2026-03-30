@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
     float screenHalfWidth;
-    const float stompTopTolerance = 0.2f;
+    const float stompTopTolerance = 0.1f;
 
     Rigidbody2D rigidBody;
     Animator animator;
@@ -146,22 +146,25 @@ public class PlayerController : MonoBehaviour
         Collider2D playerCollider = col.otherCollider;
         Collider2D monsterCollider = col.collider;
 
-        bool movingDown = rigidBody.linearVelocity.y <= 0.1f || col.relativeVelocity.y < -0.1f;
+        bool movingDown = rigidBody.linearVelocity.y < -0.15f || col.relativeVelocity.y < -0.25f;
         if (!movingDown) return false;
 
         float playerBottom = playerCollider.bounds.min.y;
         float monsterTop = monsterCollider.bounds.max.y;
         bool nearTop = playerBottom >= monsterTop - stompTopTolerance;
         bool playerAboveMonster = playerCollider.bounds.center.y > monsterCollider.bounds.center.y;
+        float maxHorizontalOffset = monsterCollider.bounds.extents.x * 0.8f;
+        bool horizontallyCentered = Mathf.Abs(playerCollider.bounds.center.x - monsterCollider.bounds.center.x) <= maxHorizontalOffset;
 
-        if (nearTop && playerAboveMonster) return true;
+        if (nearTop && playerAboveMonster && horizontallyCentered) return true;
 
         // Fallback for imperfect collider shapes: allow only contacts near monster top while player is above it.
         for (int i = 0; i < col.contactCount; i++)
         {
             ContactPoint2D cp = col.GetContact(i);
-            bool contactNearMonsterTop = Mathf.Abs(cp.point.y - monsterTop) <= stompTopTolerance;
-            if (playerAboveMonster && contactNearMonsterTop) return true;
+            bool contactNearMonsterTop = cp.point.y >= monsterTop - stompTopTolerance;
+            bool contactFromAbove = cp.normal.y > 0.45f;
+            if (playerAboveMonster && horizontallyCentered && contactNearMonsterTop && contactFromAbove) return true;
         }
 
         return false;

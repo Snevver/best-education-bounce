@@ -23,6 +23,12 @@ public class GameManager : MonoBehaviour
         HighScore = PlayerPrefs.GetInt("HighScore", 0);
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+            ResetHighScore();
+    }
+
     public void AddScore(int amount)
     {
         Score += amount;
@@ -41,6 +47,13 @@ public class GameManager : MonoBehaviour
             HighScore = Score;
 
         PlayerPrefs.SetInt("HighScore", HighScore);
+        PlayerPrefs.Save();
+    }
+
+    public void ResetHighScore()
+    {
+        HighScore = 0;
+        PlayerPrefs.DeleteKey("HighScore");
         PlayerPrefs.Save();
     }
 }
