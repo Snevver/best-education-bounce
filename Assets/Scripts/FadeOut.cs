@@ -9,8 +9,7 @@ public class FadeOut : MonoBehaviour
     public float fadeDuration = 1.5f;
     public string targetScene = "MainMenu";
 
-    public void StartFade()
-    {
+    public void StartFade() {
         if (fadePanel == null) return;
 
         Color c = fadePanel.color;
@@ -19,13 +18,12 @@ public class FadeOut : MonoBehaviour
         StartCoroutine(FadeRoutine());
     }
 
-    IEnumerator FadeRoutine()
-    {
+    // Coroutine to handle the fade-out effect
+    IEnumerator FadeRoutine() {
         float elapsed = 0f;
         Color c = fadePanel.color;
 
-        while (elapsed < fadeDuration)
-        {
+        while (elapsed < fadeDuration) {
             elapsed += Time.deltaTime;
             c.a = Mathf.Clamp01(elapsed / fadeDuration);
             fadePanel.color = c;

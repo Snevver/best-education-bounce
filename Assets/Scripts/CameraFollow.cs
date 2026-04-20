@@ -5,19 +5,16 @@ public class CameraFollow : MonoBehaviour
     public Transform player;
     public float smoothSpeed = 5f;
 
-    float highestY;
+    private float highestY;
 
-    void Start()
-    {
+    void Start() {
         highestY = transform.position.y;
     }
 
-    void Update()
-    {
+    void Update() {
         if (player == null) return;
 
-        if (player.position.y > transform.position.y)
-        {
+        if (player.position.y > transform.position.y) {
             float newY = Mathf.Lerp(transform.position.y, player.position.y, smoothSpeed * Time.deltaTime);
 
             float travelled = newY - highestY;

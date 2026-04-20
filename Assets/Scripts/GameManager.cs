@@ -8,11 +8,10 @@ public class GameManager : MonoBehaviour
     public static int Score;
     public static int HighScore;
     public static int LastScore;
-
     public static bool DiedLastGame = false;
 
-    void Awake()
-    {
+    void Awake() {
+        // Ensure only one instance of GameManager exists
         if (Instance != null) { 
             Destroy(gameObject); 
             return; 
@@ -23,35 +22,34 @@ public class GameManager : MonoBehaviour
         HighScore = PlayerPrefs.GetInt("HighScore", 0);
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-            ResetHighScore();
+    void Update() {
+        // Check for a reset high score input
+        if (Input.GetKeyDown(KeyCode.R)) ResetHighScore();
     }
 
-    public void AddScore(int amount)
-    {
+    // Method to add score and update high score if necessary
+    public void AddScore(int amount) {
         Score += amount;
+        
         if (Score > HighScore) {
             HighScore = Score;
             PlayerPrefs.SetInt("HighScore", HighScore);
         }
     }
 
-    public void GameOver()
-    {
+    // Method to handle game over logic. This includes saving the last score and updating the high score
+    public void GameOver() {
         LastScore = Score;
         DiedLastGame = true;
 
-        if (Score > HighScore)
-            HighScore = Score;
+        if (Score > HighScore) HighScore = Score;
 
         PlayerPrefs.SetInt("HighScore", HighScore);
         PlayerPrefs.Save();
     }
 
-    public void ResetHighScore()
-    {
+    // Helper method to reset the high score. This is mainly for testing purposes
+    private void ResetHighScore() {
         HighScore = 0;
         PlayerPrefs.DeleteKey("HighScore");
         PlayerPrefs.Save();

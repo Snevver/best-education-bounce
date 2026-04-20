@@ -12,21 +12,20 @@ public class PlayerController : MonoBehaviour
     public AudioClip fallOutSfx;
     [Range(0f, 1f)] public float sfxVolume = 1f;
 
-    float screenHalfWidth;
-    const float stompTopTolerance = 0.1f;
+    public const float stompTopTolerance = 0.1f;
+
+    private float screenHalfWidth;
 
     Rigidbody2D rigidBody;
     Animator animator;
 
-    void Start()
-    {
+    void Start() {
         rigidBody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         screenHalfWidth = Camera.main.orthographicSize * Camera.main.aspect;
     }
 
-    void Update()
-    {
+    void Update() {
         float input = 0f;
 
         // Movement with A and D keys
@@ -43,53 +42,12 @@ public class PlayerController : MonoBehaviour
         if (input < 0) transform.localScale = new Vector3(1, 1, 1);
         if (input > 0) transform.localScale = new Vector3(-1, 1, 1);
     }
-
-    public void Bounce(float force, bool isPLayer = true)
-    {
-        if (!isPLayer) force /= 2f;
-        rigidBody.linearVelocity = new Vector2(rigidBody.linearVelocity.x, force);
-    }
-
-    public void PlayNormalPlatformBounceSfx()
-    {
-        PlaySfx(normalPlatformBounceSfx);
-    }
-
-    public void PlayBoostBounceSfx()
-    {
-        PlaySfx(boostBounceSfx);
-    }
-
-    public void PlayMonsterBounceSfx()
-    {
-        PlaySfx(monsterBounceSfx);
-    }
-
-    public void PlayFallOutSfx()
-    {
-        PlaySfx(fallOutSfx);
-    }
-
-    void PlaySfx(AudioClip clip)
-    {
-        if (clip == null) return;
-        AudioSource.PlayClipAtPoint(clip, transform.position, sfxVolume);
-    }
-
-    void checkScreenCrossover()
-    {
-        Vector3 pos = transform.position;
-        if (pos.x > screenHalfWidth)  pos.x = -screenHalfWidth;
-        if (pos.x < -screenHalfWidth) pos.x =  screenHalfWidth;
-        transform.position = pos;
-    }
-
-    void LateUpdate()
-    {
+    
+    // Check if player has fallen below the screen and trigger game over if so
+    private void LateUpdate() {
         float bottomEdge = Camera.main.transform.position.y - Camera.main.orthographicSize;
         
-        if (transform.position.y < bottomEdge)
-        {
+        if (transform.position.y < bottomEdge) {
             PlayFallOutSfx();
             GameManager.LastScore = GameManager.Score;
             GameManager.Instance.GameOver();
@@ -102,15 +60,50 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter2D(Collision2D col)
-    {
+    public void Bounce(float force, bool isPLayer = true) {
+        if (!isPLayer) force /= 2f;
+        rigidBody.linearVelocity = new Vector2(rigidBody.linearVelocity.x, force);
+    }
+
+    public void PlayNormalPlatformBounceSfx() {
+        PlaySfx(normalPlatformBounceSfx);
+    }
+
+    public void PlayBoostBounceSfx() {
+        PlaySfx(boostBounceSfx);
+    }
+
+    public void PlayMonsterBounceSfx() {
+        PlaySfx(monsterBounceSfx);
+    }
+
+    public void PlayFallOutSfx() {
+        PlaySfx(fallOutSfx);
+    }
+
+    private void PlaySfx(AudioClip clip) {
+        if (clip == null) return;
+        AudioSource.PlayClipAtPoint(clip, transform.position, sfxVolume);
+    }
+
+    // Check if player has moved past the horizontal screen bounds and wrap around to the other side
+    private void checkScreenCrossover() {
+        Vector3 pos = transform.position;
+        if (pos.x > screenHalfWidth)  pos.x = -screenHalfWidth;
+        if (pos.x < -screenHalfWidth) pos.x =  screenHalfWidth;
+        transform.position = pos;
+    }
+
+    // Handle collisions with monsters. This includes checking if the player is stomping on the monster 
+    // or colliding from the side, and applying the appropriate effects for each case
+    private void OnCollisionEnter2D(Collision2D col) {
         if (!col.gameObject.CompareTag("Monster")) return;
 
-        if (IsStompOnMonster(col))
-        {
-            if (explosionPrefab != null)
+        if (IsStompOnMonster(col)) {
+            if (explosionPrefab != null) {
                 Instantiate(explosionPrefab, new Vector3(col.transform.position.x, col.transform.position.y, -1f), Quaternion.identity);
-            
+            }
+                
             Bounce(monsterStompBoost);
             PlayMonsterBounceSfx();
             Destroy(col.gameObject);
@@ -120,8 +113,9 @@ public class PlayerController : MonoBehaviour
         }
 
         // Spawn explosion at player position
-        if (explosionPrefab != null)
+        if (explosionPrefab != null) {
             Instantiate(explosionPrefab, new Vector3(transform.position.x, transform.position.y, -1f), Quaternion.identity);
+        }
 
         PlaySfx(monsterDeathSfx);
 
@@ -137,8 +131,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // Really complicated check made by AI to determine if player is stomping on monster
-    bool IsStompOnMonster(Collision2D col)
-    {   
+    private bool IsStompOnMonster(Collision2D col) {   
         if (rigidBody == null) return false;
         if (col.collider == null || col.otherCollider == null) return false;
 
@@ -159,8 +152,7 @@ public class PlayerController : MonoBehaviour
         if (nearTop && playerAboveMonster && horizontallyCentered) return true;
 
         // Fallback for imperfect collider shapes: allow only contacts near monster top while player is above it.
-        for (int i = 0; i < col.contactCount; i++)
-        {
+        for (int i = 0; i < col.contactCount; i++) {
             ContactPoint2D cp = col.GetContact(i);
             bool contactNearMonsterTop = cp.point.y >= monsterTop - stompTopTolerance;
             bool contactFromAbove = cp.normal.y > 0.45f;
